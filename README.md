@@ -24,11 +24,11 @@ This severe imbalance motivates the use of sampling techniques before model trai
 
 Five sampling techniques were applied to create balanced datasets:
 
-- **Sampling1 – Simple Random Sampling:** Randomly selects equal numbers of samples from each class.
-- **Sampling2 – Systematic Sampling:** Selects samples at fixed intervals after a random starting point.
-- **Sampling3 – Stratified Sampling:** Ensures equal representation from each class while preserving class structure.
-- **Sampling4 – Cluster Sampling:** Divides data into partitions (clusters) and selects clusters to form a balanced sample.
-- **Sampling5 – Bootstrap Sampling:** Uses sampling with replacement to generate balanced class distributions.
+- **Sampling1 - Simple Random Sampling:** Randomly selects equal numbers of samples from each class.
+- **Sampling2 - Systematic Sampling:** Selects samples at fixed intervals after a random starting point.
+- **Sampling3 - Stratified Sampling:** Ensures equal representation from each class while preserving class structure.
+- **Sampling4 - Cluster Sampling:** Divides data into partitions (clusters) and selects clusters to form a balanced sample.
+- **Sampling5 - Bootstrap Sampling:** Uses sampling with replacement to generate balanced class distributions.
 
 Each technique results in a balanced dataset of 18 samples.
 
