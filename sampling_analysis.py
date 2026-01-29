@@ -10,39 +10,31 @@ from sklearn.svm import SVC
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.utils import resample
 
-# --------------------------------------------------
-# Reproducibility
-# --------------------------------------------------
+ # Set random seeds for reproducibility
 RANDOM_STATE = 42
 np.random.seed(RANDOM_STATE)
 random.seed(RANDOM_STATE)
 
-# --------------------------------------------------
-# Load Dataset
-# --------------------------------------------------
+ # Load the credit card dataset
 DATA_PATH = "Creditcard_data.csv"
 df = pd.read_csv(DATA_PATH)
 
-# Identify target column
+ # Identify the target column for classification
 target_col = "Class" if "Class" in df.columns else df.columns[-1]
 
 print("Class distribution before sampling:")
 print(df[target_col].value_counts())
 
-# --------------------------------------------------
-# Helper Functions
-# --------------------------------------------------
+ # Helper function to print class distribution after sampling
 def print_class_counts(data, label):
     print(f"\nClass distribution after {label}:")
     print(data[target_col].value_counts())
 
 min_class_size = df[target_col].value_counts().min()
 
-# --------------------------------------------------
-# Sampling Techniques
-# --------------------------------------------------
+ # Sampling technique implementations
 
-# 1. Simple Random Sampling
+    # Simple Random Sampling: randomly select equal samples from each class
 def simple_random_sampling(df):
     samples = []
     for cls in df[target_col].unique():
@@ -50,7 +42,7 @@ def simple_random_sampling(df):
         samples.append(cls_df.sample(min_class_size, random_state=RANDOM_STATE))
     return pd.concat(samples).sample(frac=1, random_state=RANDOM_STATE).reset_index(drop=True)
 
-# 2. Systematic Sampling (random start + fixed interval)
+    # Systematic Sampling: select samples at fixed intervals after shuffling
 def systematic_sampling(df):
     samples = []
     for cls in df[target_col].unique():
@@ -61,7 +53,7 @@ def systematic_sampling(df):
         samples.append(cls_df.iloc[idx[:min_class_size]])
     return pd.concat(samples).sample(frac=1, random_state=RANDOM_STATE).reset_index(drop=True)
 
-# 3. Stratified Sampling (true stratification)
+    # Stratified Sampling: sample equal numbers from each class, preserving structure
 def stratified_sampling(df):
     return (
         df.groupby(target_col, group_keys=False)
@@ -70,7 +62,7 @@ def stratified_sampling(df):
         .reset_index(drop=True)
     )
 
-# 4. Cluster Sampling (partition-based clusters)
+    # Cluster Sampling: split each class into clusters, then select clusters
 def cluster_sampling(df):
     samples = []
     n_clusters = 5
@@ -85,7 +77,7 @@ def cluster_sampling(df):
 
     return pd.concat(samples).sample(frac=1, random_state=RANDOM_STATE).reset_index(drop=True)
 
-# 5. Bootstrap Sampling
+    # Bootstrap Sampling: sample with replacement to balance classes
 def bootstrap_sampling(df):
     samples = []
     for cls in df[target_col].unique():
@@ -100,9 +92,7 @@ def bootstrap_sampling(df):
         )
     return pd.concat(samples).sample(frac=1, random_state=RANDOM_STATE).reset_index(drop=True)
 
-# --------------------------------------------------
-# Create Sampled Datasets
-# --------------------------------------------------
+ # Create balanced datasets using each sampling technique
 datasets = {
     "Sampling1": simple_random_sampling(df),
     "Sampling2": systematic_sampling(df),
@@ -114,9 +104,7 @@ datasets = {
 for name, data in datasets.items():
     print_class_counts(data, name)
 
-# --------------------------------------------------
-# Models
-# --------------------------------------------------
+ # Define machine learning models to evaluate
 models = {
     "M1": LogisticRegression(max_iter=1000, random_state=RANDOM_STATE),
     "M2": DecisionTreeClassifier(random_state=RANDOM_STATE),
@@ -125,9 +113,7 @@ models = {
     "M5": KNeighborsClassifier()
 }
 
-# --------------------------------------------------
-# Run Experiments
-# --------------------------------------------------
+ # Train and evaluate each model on each sampled dataset
 results = pd.DataFrame(index=models.keys(), columns=datasets.keys())
 
 for sample_name, sample_df in datasets.items():
@@ -146,9 +132,7 @@ for sample_name, sample_df in datasets.items():
         acc = model.score(X_test, y_test)
         results.loc[model_name, sample_name] = round(acc, 4)
 
-# --------------------------------------------------
-# Results & Analysis
-# --------------------------------------------------
+ # Display results and identify best sampling/model combinations
 print("\nAccuracy Results Table:")
 print(results)
 
